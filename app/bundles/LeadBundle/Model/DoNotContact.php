@@ -100,12 +100,7 @@ class DoNotContact
         $dnc     = false;
         $contact = $this->leadModel->getEntity($contactId);
 
-        if ($contact === null) {
-            // Contact not found, nothing to do
-            return false;
-        }
-
-        // if !$checkCurrentStatus, assume is contactable due to already being validated
+        // if !$checkCurrentStatus, assume is contactable due to already being valided
         $isContactable = ($checkCurrentStatus) ? $this->isContactable($contact, $channel) : DNC::IS_CONTACTABLE;
 
         // If they don't have a DNC entry yet

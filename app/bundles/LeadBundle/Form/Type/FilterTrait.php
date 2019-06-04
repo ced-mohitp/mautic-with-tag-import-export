@@ -66,18 +66,6 @@ trait FilterTrait
 
         $customOptions = [];
         switch ($fieldType) {
-            case 'assets':
-                if (!isset($data['filter'])) {
-                    $data['filter'] = [];
-                } elseif (!is_array($data['filter'])) {
-                    $data['filter'] = [$data['filter']];
-                }
-
-                $customOptions['choices']                   = $options['assets'];
-                $customOptions['multiple']                  = true;
-                $customOptions['choice_translation_domain'] = false;
-                $type                                       = 'choice';
-                break;
             case 'leadlist':
                 if (!isset($data['filter'])) {
                     $data['filter'] = [];

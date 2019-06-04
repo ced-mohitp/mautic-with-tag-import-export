@@ -14,7 +14,6 @@ namespace Mautic\LeadBundle\Controller\Api;
 use FOS\RestBundle\Util\Codes;
 use JMS\Serializer\SerializationContext;
 use Mautic\ApiBundle\Controller\CommonApiController;
-use Mautic\CoreBundle\Helper\ArrayHelper;
 use Mautic\CoreBundle\Helper\DateTimeHelper;
 use Mautic\CoreBundle\Helper\InputHelper;
 use Mautic\LeadBundle\Controller\FrequencyRuleTrait;
@@ -428,7 +427,7 @@ class LeadApiController extends CommonApiController
 
         $channelId = (int) $this->request->request->get('channelId');
         if ($channelId) {
-            $channel = [$channel => $channelId];
+            $channel = [$channel, $channelId];
         }
         $reason   = (int) $this->request->request->get('reason');
         $comments = InputHelper::clean($this->request->request->get('comments'));
@@ -607,6 +606,21 @@ class LeadApiController extends CommonApiController
      */
     protected function preSaveEntity(&$entity, $form, $parameters, $action = 'edit')
     {
+        
+        //mwb
+
+        $originalParams = $this->request->request->all();
+
+        if( isset($originalParams['mwb_abncart_prod_html'] ) ) {
+
+            if(!empty($parameters['mwb_abncart_prod_html'])) {
+
+                $parameters['mwb_abncart_prod_html'] = $originalParams['mwb_abncart_prod_html'];
+            }
+        }
+
+        //mwb
+        
         if ('edit' === $action) {
             // Merge existing duplicate contact based on unique fields if exist
             // new endpoints will leverage getNewEntity in order to return the correct status codes
@@ -652,21 +666,12 @@ class LeadApiController extends CommonApiController
             unset($this->entityRequestParameters['lastActive']);
         }
 
-        // Batch DNC settings
         if (!empty($parameters['doNotContact']) && is_array($parameters['doNotContact'])) {
             foreach ($parameters['doNotContact'] as $dnc) {
                 $channel  = !empty($dnc['channel']) ? $dnc['channel'] : 'email';
                 $comments = !empty($dnc['comments']) ? $dnc['comments'] : '';
-
-                $reason = (int) ArrayHelper::getValue('reason', $dnc, DoNotContact::MANUAL);
-
-                if ($reason === DoNotContact::IS_CONTACTABLE) {
-                    // Remove DNC record
-                    $this->model->removeDncForLead($entity, $channel, false);
-                } else {
-                    // Add DNC record
-                    $this->model->addDncForLead($entity, $channel, $comments, $reason, false);
-                }
+                $reason   = !empty($dnc['reason']) ? $dnc['reason'] : DoNotContact::MANUAL;
+                $this->model->addDncForLead($entity, $channel, $comments, $reason, false);
             }
             unset($parameters['doNotContact']);
         }
@@ -689,8 +694,7 @@ class LeadApiController extends CommonApiController
             unset($parameters['frequencyRules']);
         }
 
-        $isPostOrPatch = 'POST' === $this->request->getMethod() || 'PATCH' === $this->request->getMethod();
-        $this->setCustomFieldValues($entity, $form, $parameters, $isPostOrPatch);
+        $this->setCustomFieldValues($entity, $form, $parameters, 'POST' === $this->request->getMethod());
     }
 
     /**

@@ -36,7 +36,11 @@ class LeadImportFieldType extends AbstractType
      * @param array                $options
      */
     public function buildForm(FormBuilderInterface $builder, array $options)
-    {
+    {   
+
+
+        /*print_r($options);*/
+
         $specialFields = [
             'dateAdded'      => 'mautic.lead.import.label.dateAdded',
             'createdByUser'  => 'mautic.lead.import.label.createdByUser',
@@ -62,6 +66,7 @@ class LeadImportFieldType extends AbstractType
         }
 
         foreach ($options['import_fields'] as $field => $label) {
+
             $builder->add(
                 $field,
                 'choice',

@@ -785,8 +785,9 @@ class CommonController extends Controller implements MauticController
     {
         if (!in_array($type, ['csv', 'xlsx'])) {
             throw new \InvalidArgumentException($this->translator->trans('mautic.error.invalid.export.type', ['%type%' => $type]));
-        }
+        } 
 
+    
         if ($toExport instanceof \Iterator) {
             $sourceIterator = new IteratorSourceIterator($toExport);
         } else {

@@ -124,6 +124,7 @@ class LeadSubscriber extends CommonSubscriber
 
                 $contactId = $stat['lead_id'];
                 unset($stat['lead_id']);
+
                 $event->addEvent(
                     [
                         'event'      => $eventTypeKey,

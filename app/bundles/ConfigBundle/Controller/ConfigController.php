@@ -63,7 +63,6 @@ class ConfigController extends FormController
         /** @var \Mautic\CoreBundle\Configurator\Configurator $configurator */
         $configurator = $this->get('mautic.configurator');
         $isWritabale  = $configurator->isFileWritable();
-        $openTab      = null;
 
         // Check for a submitted form and process it
         if ($this->request->getMethod() == 'POST') {
@@ -133,10 +132,6 @@ class ConfigController extends FormController
                             /** @var \Mautic\CoreBundle\Helper\CacheHelper $cacheHelper */
                             $cacheHelper = $this->get('mautic.helper.cache');
                             $cacheHelper->clearContainerFile();
-
-                            if ($isValid && !empty($formData['coreconfig']['last_shown_tab'])) {
-                                $openTab = $formData['coreconfig']['last_shown_tab'];
-                            }
                         } catch (\RuntimeException $exception) {
                             $this->addFlash('mautic.config.config.error.not.updated', ['%exception%' => $exception->getMessage()], 'error');
                         }
@@ -153,12 +148,7 @@ class ConfigController extends FormController
             // If the form is saved or cancelled, redirect back to the dashboard
             if ($cancelled || $isValid) {
                 if (!$cancelled && $this->isFormApplied($form)) {
-                    $redirectParameters = ['objectAction' => 'edit'];
-                    if ($openTab) {
-                        $redirectParameters['tab'] = $openTab;
-                    }
-
-                    return $this->delegateRedirect($this->generateUrl('mautic_config_action', $redirectParameters));
+                    return $this->delegateRedirect($this->generateUrl('mautic_config_action', ['objectAction' => 'edit']));
                 } else {
                     return $this->delegateRedirect($this->generateUrl('mautic_dashboard_index'));
                 }

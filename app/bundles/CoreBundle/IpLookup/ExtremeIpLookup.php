@@ -30,9 +30,7 @@ class ExtremeIpLookup extends AbstractRemoteDataLookup
      */
     protected function getUrl()
     {
-        $auth = !empty($this->auth) ? '?key='.$this->auth : '';
-
-        return 'https://extreme-ip-lookup.com/json/'.$this->ip.$auth;
+        return 'https://extreme-ip-lookup.com/json/'.$this->ip;
     }
 
     /**
@@ -53,9 +51,6 @@ class ExtremeIpLookup extends AbstractRemoteDataLookup
                         break;
                     case 'city':
                         $key = 'city';
-                        break;
-                    case 'businessName':
-                        $key = 'organization';
                         break;
                 }
 

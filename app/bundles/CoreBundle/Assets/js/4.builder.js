@@ -109,9 +109,7 @@ Mautic.launchBuilder = function (formName, actionName) {
         Mautic.activateButtonLoadingIndicator(applyBtn);
         Mautic.sendBuilderContentToTextarea(function() {
             // Trigger slot:destroy event
-            if(typeof document.getElementById('builder-template-content').contentWindow.Mautic !== 'undefined') {
-                document.getElementById('builder-template-content').contentWindow.Mautic.destroySlots();
-            }
+            document.getElementById('builder-template-content').contentWindow.Mautic.destroySlots();
             // Clear the customize forms
             mQuery('#slot-form-container, #section-form-container').html('');
             Mautic.inBuilderSubmissionOn(form);
@@ -460,9 +458,7 @@ Mautic.closeBuilder = function(model) {
                 delete Mautic.codeMode;
             } else {
                 // Trigger slot:destroy event
-                if(typeof document.getElementById('builder-template-content').contentWindow.Mautic !== 'undefined') {
-                    document.getElementById('builder-template-content').contentWindow.Mautic.destroySlots();
-                }
+                document.getElementById('builder-template-content').contentWindow.Mautic.destroySlots();
 
                 // Clear the customize forms
                 mQuery('#slot-form-container, #section-form-container').html('');

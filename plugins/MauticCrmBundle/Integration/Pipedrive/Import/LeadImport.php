@@ -102,7 +102,7 @@ class LeadImport extends AbstractImport
         }
 
         /** @var Lead $lead * */
-        $lead = $this->leadModel->getEntity($integrationEntity->getInternalEntityId());
+        $lead         = $this->em->getRepository(Lead::class)->findOneById($integrationEntity->getInternalEntityId());
 
         // prevent listeners from exporting
         $lead->setEventData('pipedrive.webhook', 1);
@@ -118,7 +118,7 @@ class LeadImport extends AbstractImport
         } //Do not push lead if contact was modified in Mautic, and we don't wanna mofify it
 
         $lead->setDateModified(new \DateTime());
-        $this->leadModel->setFieldValues($lead, $dataToUpdate, true);
+        $this->leadModel->setFieldValues($lead, $dataToUpdate);
 
         if (!isset($data['owner_id']) && $lead->getOwner()) {
             $lead->setOwner(null);

@@ -24,7 +24,7 @@
                 <?php echo $view['form']->rowIfExists($form, 'list'); ?>
             </div>
             <div class="col-xs-4">
-                <?php echo $view['form']->rowIfExists($form, 'tags'); ?>
+                <?php  // echo $view['form']->rowIfExists($form, 'tags'); ?>
             </div>
         </div>
     </div>

@@ -76,7 +76,7 @@ class LeadSubscriber extends CommonSubscriber
 
         //get campaigns for the list
         if (!isset($listCampaigns[$list->getId()])) {
-            $listCampaigns[$list->getId()] = $this->campaignModel->getRepository()->getPublishedCampaignsByLeadLists($list->getId(), $this->security->isGranted('campaign:campaigns:viewother'));
+            $listCampaigns[$list->getId()] = $this->campaignModel->getRepository()->getPublishedCampaignsByLeadLists($list->getId());
         }
 
         $leadLists = $em->getRepository('MauticLeadBundle:LeadList')->getLeadLists($leads, true, true);
@@ -99,7 +99,7 @@ class LeadSubscriber extends CommonSubscriber
 
                     $removeLeads = [];
                     foreach ($leads as $l) {
-                        $lists = (isset($leadLists[$l['id']])) ? $leadLists[$l['id']] : [];
+                        $lists = (isset($leadLists[$l])) ? $leadLists[$l] : [];
                         if (array_intersect(array_keys($lists), $campaignLists[$c['id']])) {
                             continue;
                         } else {
@@ -129,7 +129,7 @@ class LeadSubscriber extends CommonSubscriber
         $repo   = $this->campaignModel->getRepository();
 
         //get campaigns for the list
-        $listCampaigns = $repo->getPublishedCampaignsByLeadLists($list->getId(), $this->security->isGranted('campaign:campaigns:viewother'));
+        $listCampaigns = $repo->getPublishedCampaignsByLeadLists($list->getId());
 
         $leadLists   = $this->leadModel->getLists($lead, true);
         $leadListIds = array_keys($leadLists);

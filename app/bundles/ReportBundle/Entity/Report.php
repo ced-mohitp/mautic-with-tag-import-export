@@ -133,7 +133,7 @@ class Report extends FormEntity implements SchedulerInterface
 
         $builder->addIdColumns();
 
-        $builder->addField('system', Type::BOOLEAN, ['columnName'=>'`system`']);
+        $builder->addField('system', Type::BOOLEAN);
 
         $builder->addField('source', Type::STRING);
 
@@ -365,26 +365,6 @@ class Report extends FormEntity implements SchedulerInterface
     }
 
     /**
-     * Get filter value from a specific filter.
-     *
-     * @param string $column
-     *
-     * @return mixed
-     *
-     * @throws \UnexpectedValueException
-     */
-    public function getFilterValue($column)
-    {
-        foreach ($this->getFilters() as $field) {
-            if ($column === $field['column']) {
-                return $field['value'];
-            }
-        }
-
-        throw new \UnexpectedValueException("Column {$column} doesn't have any filter.");
-    }
-
-    /**
      * @return mixed
      */
     public function getDescription()
@@ -470,24 +450,6 @@ class Report extends FormEntity implements SchedulerInterface
         return array_map(function ($aggregator) {
             return $aggregator['column'];
         }, $this->getAggregators());
-    }
-
-    /**
-     * @return array
-     */
-    public function getOrderColumns()
-    {
-        return array_map(function ($order) {
-            return $order['column'];
-        }, $this->getTableOrder());
-    }
-
-    /**
-     * @return array
-     */
-    public function getSelectAndAggregatorAndOrderAndGroupByColumns()
-    {
-        return array_merge($this->getSelectAndAggregatorColumns(), $this->getOrderColumns(), $this->getGroupBy());
     }
 
     /**

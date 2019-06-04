@@ -213,18 +213,14 @@ $graphContent = $view->render(
         mQuery('.datetimepicker').datetimepicker({
             format:'Y-m-d H:i:s',
             closeOnDateSelect: true,
-            validateOnBlur: false,
-            scrollMonth: false,
-            scrollInput: false
+            validateOnBlur: false
         });
     });
     mQuery(document).ready(function() {
         mQuery('.datepicker').datetimepicker({
             format:'Y-m-d',
             closeOnDateSelect: true,
-            validateOnBlur: false,
-            scrollMonth: false,
-            scrollInput: false
+            validateOnBlur: false
         });
     });
 </script>
