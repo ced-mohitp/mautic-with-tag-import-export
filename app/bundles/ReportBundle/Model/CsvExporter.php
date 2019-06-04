@@ -11,7 +11,6 @@
 
 namespace Mautic\ReportBundle\Model;
 
-use Mautic\CoreBundle\Helper\CoreParametersHelper;
 use Mautic\CoreBundle\Templating\Helper\FormatterHelper;
 use Mautic\ReportBundle\Crate\ReportDataResult;
 
@@ -25,15 +24,9 @@ class CsvExporter
      */
     protected $formatterHelper;
 
-    /**
-     * @var CoreParametersHelper
-     */
-    private $coreParametersHelper;
-
-    public function __construct(FormatterHelper $formatterHelper, CoreParametersHelper $coreParametersHelper)
+    public function __construct(FormatterHelper $formatterHelper)
     {
-        $this->formatterHelper      = $formatterHelper;
-        $this->coreParametersHelper = $coreParametersHelper;
+        $this->formatterHelper = $formatterHelper;
     }
 
     /**
@@ -52,9 +45,11 @@ class CsvExporter
             foreach ($data as $k => $v) {
                 $type       = $reportDataResult->getType($k);
                 $typeString = $type !== 'string';
-                $row[]      = $typeString ? $this->formatterHelper->_($v, $type, true) : $v;
+
+                $row[] = $typeString ? $this->formatterHelper->_($v, $type, true) : $v;
             }
-            $this->putRow($handle, $row);
+
+            fputcsv($handle, $row);
         }
     }
 
@@ -64,19 +59,6 @@ class CsvExporter
      */
     private function putHeader(ReportDataResult $reportDataResult, $handle)
     {
-        $this->putRow($handle, $reportDataResult->getHeaders());
-    }
-
-    /**
-     * @param resource $handle
-     * @param array    $row
-     */
-    private function putRow($handle, array $row)
-    {
-        if ($this->coreParametersHelper->getParameter('csv_always_enclose')) {
-            fputs($handle, '"'.implode('","', $row).'"'."\n");
-        } else {
-            fputcsv($handle, $row);
-        }
+        fputcsv($handle, $reportDataResult->getHeaders());
     }
 }

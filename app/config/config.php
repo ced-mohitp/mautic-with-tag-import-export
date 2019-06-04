@@ -124,14 +124,6 @@ $mauticBundles  = array_filter(
 );
 unset($buildBundles);
 
-// Load extra annotations
-$container->loadFromExtension('sensio_framework_extra', [
-    'router'  => ['annotations' => false],
-    'request' => ['converters' => false],
-    'view'    => ['annotations' => true],
-    'cache'   => ['annotations' => false],
-]);
-
 // Sort Mautic's bundles into Core and Plugins
 $setBundles = $setPluginBundles = [];
 foreach ($mauticBundles as $bundle) {
@@ -212,18 +204,13 @@ $container->setParameter('mautic.famework.csrf_protection', true);
 
 //Doctrine Configuration
 $dbalSettings = [
-    'driver'                => '%mautic.db_driver%',
-    'host'                  => '%mautic.db_host%',
-    'port'                  => '%mautic.db_port%',
-    'dbname'                => '%mautic.db_name%',
-    'user'                  => '%mautic.db_user%',
-    'password'              => '%mautic.db_password%',
-    'charset'               => 'UTF8',
-    'default_table_options' => [
-        'charset'    => 'utf8',
-        'collate'    => 'utf8_unicode_ci',
-        'row_format' => 'DYNAMIC',
-    ],
+    'driver'   => '%mautic.db_driver%',
+    'host'     => '%mautic.db_host%',
+    'port'     => '%mautic.db_port%',
+    'dbname'   => '%mautic.db_name%',
+    'user'     => '%mautic.db_user%',
+    'password' => '%mautic.db_password%',
+    'charset'  => 'UTF8',
     'types'    => [
         'array'    => 'Mautic\CoreBundle\Doctrine\Type\ArrayType',
         'datetime' => 'Mautic\CoreBundle\Doctrine\Type\UTCDateTimeType',

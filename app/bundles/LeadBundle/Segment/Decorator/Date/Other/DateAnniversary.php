@@ -12,7 +12,6 @@
 namespace Mautic\LeadBundle\Segment\Decorator\Date\Other;
 
 use Mautic\LeadBundle\Segment\ContactSegmentFilterCrate;
-use Mautic\LeadBundle\Segment\Decorator\Date\DateOptionParameters;
 use Mautic\LeadBundle\Segment\Decorator\DateDecorator;
 use Mautic\LeadBundle\Segment\Decorator\FilterDecoratorInterface;
 
@@ -24,18 +23,11 @@ class DateAnniversary implements FilterDecoratorInterface
     private $dateDecorator;
 
     /**
-     * @var DateOptionParameters
+     * @param DateDecorator $dateDecorator
      */
-    private $dateOptionParameters;
-
-    /**
-     * @param DateDecorator        $dateDecorator
-     * @param DateOptionParameters $dateOptionParameters
-     */
-    public function __construct(DateDecorator $dateDecorator, DateOptionParameters $dateOptionParameters)
+    public function __construct(DateDecorator $dateDecorator)
     {
-        $this->dateDecorator        = $dateDecorator;
-        $this->dateOptionParameters = $dateOptionParameters;
+        $this->dateDecorator = $dateDecorator;
     }
 
     /**
@@ -86,9 +78,9 @@ class DateAnniversary implements FilterDecoratorInterface
      */
     public function getParameterValue(ContactSegmentFilterCrate $contactSegmentFilterCrate)
     {
-        $dateTimeHelper = $this->dateOptionParameters->getDefaultDate();
+        $dateTimeHelper = $this->dateDecorator->getDefaultDate();
 
-        return $dateTimeHelper->toLocalString('%-m-d');
+        return $dateTimeHelper->toUtcString('%-m-d');
     }
 
     /**

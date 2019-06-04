@@ -13,6 +13,7 @@ namespace Mautic\FormBundle\Controller\Api;
 
 use FOS\RestBundle\Util\Codes;
 use Mautic\ApiBundle\Controller\CommonApiController;
+use Mautic\CoreBundle\Helper\InputHelper;
 use Symfony\Component\Form\FormInterface;
 use Symfony\Component\HttpKernel\Event\FilterControllerEvent;
 
@@ -96,7 +97,15 @@ class FormApiController extends CommonApiController
             return $this->badRequest('The actions attribute must be array.');
         }
 
-        $this->model->deleteActions($entity, $actionsToDelete);
+        $currentActions = $entity->getActions();
+
+        foreach ($currentActions as $currentAction) {
+            if (in_array($currentAction->getId(), $actionsToDelete)) {
+                $entity->removeAction($currentAction);
+            }
+        }
+
+        $this->model->saveEntity($entity);
 
         $view = $this->view([$this->entityNameOne => $entity]);
 
@@ -168,7 +177,7 @@ class FormApiController extends CommonApiController
                 $fieldEntityArray['formId'] = $formId;
 
                 if (!empty($fieldParams['alias'])) {
-                    $fieldParams['alias'] = $fieldModel->cleanAlias($fieldParams['alias'], '', 25);
+                    $fieldParams['alias'] = InputHelper::filename($fieldParams['alias']);
 
                     if (!in_array($fieldParams['alias'], $aliases)) {
                         $fieldEntityArray['alias'] = $fieldParams['alias'];
@@ -240,16 +249,10 @@ class FormApiController extends CommonApiController
 
         // Remove actions which weren't in the PUT request
         if (!$isNew && $method === 'PUT') {
-            $actionsToDelete = [];
-
             foreach ($currentActions as $currentAction) {
                 if (!in_array($currentAction->getId(), $requestActionIds)) {
-                    $actionsToDelete[] = $currentAction->getId();
+                    $entity->removeAction($currentAction);
                 }
-            }
-
-            if ($actionsToDelete) {
-                $this->model->deleteActions($entity, $actionsToDelete);
             }
         }
     }

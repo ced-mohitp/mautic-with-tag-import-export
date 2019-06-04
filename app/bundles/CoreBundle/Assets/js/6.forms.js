@@ -389,8 +389,7 @@ Mautic.updateEntitySelect = function (response) {
 
         var sortOptions = function (options) {
             return options.sort(function (a, b) {
-                var alc = a.text ? a.text.toLowerCase() : mQuery(a).attr("label").toLowerCase();
-                var blc = b.text ? b.text.toLowerCase() : mQuery(b).attr("label").toLowerCase();
+                var alc = a.text.toLowerCase(), blc = b.text.toLowerCase();
                 return alc > blc ? 1 : alc < blc ? -1 : 0;
             });
         }
@@ -468,7 +467,7 @@ Mautic.updateEntitySelect = function (response) {
         }
 
         newOption.prop('selected', true);
-        mQueryParent(el).val(response.id).trigger("chosen:updated");
+        mQueryParent(el).trigger("chosen:updated");
     }
 
     if (window.opener) {

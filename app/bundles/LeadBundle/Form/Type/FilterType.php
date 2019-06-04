@@ -101,7 +101,6 @@ class FilterType extends AbstractType
                 'deviceTypes',
                 'deviceBrands',
                 'deviceOs',
-                'assets',
                 'tags',
                 'stage',
                 'locales',

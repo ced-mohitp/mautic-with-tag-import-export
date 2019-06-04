@@ -134,7 +134,6 @@ trait CustomFieldRepositoryTrait
                 $q->orderBy('ORD', 'ASC');
 
                 $results = $q->getQuery()
-                    ->useQueryCache(false) // the query contains ID's, so there is no use in caching it
                     ->getResult();
 
                 //assign fields

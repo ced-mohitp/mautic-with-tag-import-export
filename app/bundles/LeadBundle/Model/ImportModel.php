@@ -354,6 +354,8 @@ class ImportModel extends FormModel
             $data = $file->fgetcsv($config['delimiter'], $config['enclosure'], $config['escape']);
             $import->setLastLineImported($lineNumber);
 
+
+
             // Ignore the header row
             if ($lineNumber === 1) {
                 ++$lineNumber;
@@ -384,19 +386,63 @@ class ImportModel extends FormModel
 
                 $data = array_combine($headers, $data);
 
+                //print_r($data);
+
+
+
                 try {
                     $entityModel = $import->getObject() === 'company' ? $this->companyModel : $this->leadModel;
 
-                    $merged = $entityModel->import(
-                        $import->getMatchedFields(),
-                        $data,
-                        $import->getDefault('owner'),
-                        $import->getDefault('list'),
-                        $import->getDefault('tags'),
-                        true,
-                        $eventLog,
-                        $import->getId()
-                    );
+
+
+                    //mwb
+                    //code edit to import tags via csv
+                    //mohit pandey
+                    //date 04-06-2019
+
+
+                    $addTags = false ; 
+
+                    if(in_array('tags', $headers)){
+
+                        if(isset($data['tags']) && $data['tags'] != ""){
+
+                            $addTags = true ;
+
+                        }
+                    }
+
+                    
+
+                    if($addTags){
+
+                        $merged = $entityModel->import(
+                            $import->getMatchedFields(),
+                            $data,
+                            $import->getDefault('owner'),
+                            $import->getDefault('list'),
+                            $data['tags'],
+                            true,
+                            $eventLog,
+                            $import->getId()
+                        );
+
+                    }else{
+
+                          $merged = $entityModel->import(
+                            $import->getMatchedFields(),
+                            $data,
+                            $import->getDefault('owner'),
+                            $import->getDefault('list'),
+                            $import->getDefault('tags'),
+                            true,
+                            $eventLog,
+                            $import->getId()
+                        );
+                    }
+                    
+                    //mwb
+                    
 
                     if ($merged) {
                         $this->logDebug('Entity on line '.$lineNumber.' has been updated', $import);

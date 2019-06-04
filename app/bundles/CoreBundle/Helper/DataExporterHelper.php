@@ -10,6 +10,7 @@
 namespace Mautic\CoreBundle\Helper;
 
 use Mautic\CoreBundle\Model\AbstractCommonModel;
+use Mautic\LeadBundle\Entity\Lead;
 
 class DataExporterHelper
 {
@@ -31,10 +32,12 @@ class DataExporterHelper
         $args['start'] = $start;
 
         $results = $model->getEntities($args);
+
         $items   = $results['results'];
         if (count($items) === 0) {
             return null;
         }
+        
         unset($results);
 
         $toExport = [];
@@ -43,9 +46,28 @@ class DataExporterHelper
 
         if (is_callable($resultsCallback)) {
             foreach ($items as $item) {
-                $row = array_map(function ($itemEncode) {
+
+                 $row = array_map(function ($itemEncode) {
                     return html_entity_decode($itemEncode, ENT_QUOTES);
                 }, $resultsCallback($item));
+
+                //mwb code to export tag
+
+                $isLeadInstance = ($item instanceof Lead ) ;
+
+                if($isLeadInstance){
+
+                    $itemTags = array();  
+
+                    if (count($item->getTags()) > 0) {
+                        foreach ($item->getTags() as $tag) {
+                            $itemTags[] = $tag->getTag();
+                        }
+                    }
+
+                    $row['tags'] = implode(',', $itemTags);
+                }
+                //mwb code to export tag
 
                 $toExport[] = $this->secureAgainstCsvInjection($row);
             }

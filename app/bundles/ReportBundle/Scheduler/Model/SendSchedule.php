@@ -39,8 +39,6 @@ class SendSchedule
      */
     public function send(Scheduler $scheduler, $filePath)
     {
-        $this->mailer->reset(true);
-
         $transformer = new ArrayStringTransformer();
         $report      = $scheduler->getReport();
         $emails      = $transformer->reverseTransform($report->getToAddress());

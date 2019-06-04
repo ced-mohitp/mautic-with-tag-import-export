@@ -533,7 +533,7 @@ Mautic.addDynamicContentFilter = function (selectedFilter, jQueryVariant) {
     var prototype   = mQuery('#filterSelectPrototype').data('prototype');
     var fieldObject = selectedOption.data('field-object');
     var fieldType   = selectedOption.data('field-type');
-    var isSpecial   = (mQuery.inArray(fieldType, ['leadlist', 'assets', 'lead_email_received', 'tags', 'multiselect', 'boolean', 'select', 'country', 'timezone', 'region', 'stage', 'locale']) != -1);
+    var isSpecial   = (mQuery.inArray(fieldType, ['leadlist', 'lead_email_received', 'tags', 'multiselect', 'boolean', 'select', 'country', 'timezone', 'region', 'stage', 'locale']) != -1);
 
     // Update the prototype settings
     prototype = prototype.replace(/__name__/g, filterNum)
@@ -619,7 +619,6 @@ Mautic.addDynamicContentFilter = function (selectedFilter, jQueryVariant) {
             lazyInit: true,
             validateOnBlur: false,
             allowBlank: true,
-            scrollMonth: false,
             scrollInput: false
         });
     } else if (fieldType == 'date') {
@@ -629,7 +628,6 @@ Mautic.addDynamicContentFilter = function (selectedFilter, jQueryVariant) {
             lazyInit: true,
             validateOnBlur: false,
             allowBlank: true,
-            scrollMonth: false,
             scrollInput: false,
             closeOnDateSelect: true
         });
@@ -640,7 +638,6 @@ Mautic.addDynamicContentFilter = function (selectedFilter, jQueryVariant) {
             lazyInit: true,
             validateOnBlur: false,
             allowBlank: true,
-            scrollMonth: false,
             scrollInput: false
         });
     } else if (fieldType == 'lookup_id') {

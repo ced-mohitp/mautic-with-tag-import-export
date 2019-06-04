@@ -367,7 +367,6 @@ class LeadController extends FormController
                     'engagementData'    => $this->getEngagementData($lead),
                     'noteCount'         => $this->getModel('lead.note')->getNoteCount($lead, true),
                     'integrations'      => $integrationRepo->getIntegrationEntityByLead($lead->getId()),
-                    'devices'           => $this->get('mautic.lead.repository.lead_device')->getLeadDevices($lead),
                     'auditlog'          => $this->getAuditlogs($lead),
                     'doNotContact'      => end($dnc),
                     'leadNotes'         => $this->forward(
@@ -616,7 +615,16 @@ class LeadController extends FormController
                     //pull the data from the form in order to apply the form's formatting
                     foreach ($form as $f) {
                         if (('companies' !== $f->getName()) && ('company' !== $f->getName())) {
-                            $data[$f->getName()] = $f->getData();
+                            //$data[$f->getName()] = $f->getData();
+
+                            //mwb edit    
+                            if($f->getName() != "mwb_abncart_prod_html") {
+
+                                $data[$f->getName()] = $f->getData();
+                            }
+
+                            //mwb edit
+
                         }
                     }
 
@@ -1872,7 +1880,9 @@ class LeadController extends FormController
      */
     public function batchExportAction()
     {
-        //set some permissions
+        //set some permissions 
+
+        
         $permissions = $this->get('mautic.security')->isGranted(
             [
                 'lead:leads:viewown',
@@ -1904,6 +1914,7 @@ class LeadController extends FormController
         $mine       = $translator->trans('mautic.core.searchcommand.ismine');
         $indexMode  = $session->get('mautic.lead.indexmode', 'list');
         $dataType   = $this->request->get('filetype', 'csv');
+       
 
         if (!empty($ids)) {
             $filter['force'] = [
@@ -1937,7 +1948,10 @@ class LeadController extends FormController
             return $contact->getProfileFields();
         };
 
+
         $iterator = new IteratorExportDataModel($model, $args, $resultsCallback);
+
+       
 
         return $this->exportResultsAs($iterator, $dataType, 'contacts');
     }

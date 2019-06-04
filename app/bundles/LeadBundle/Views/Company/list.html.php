@@ -108,12 +108,6 @@ if ($tmpl == 'index') {
                     </td>
                     <td>
                         <div>
-                            <?php if ($view['security']->hasEntityAccess(
-                                       $permissions['lead:leads:editown'],
-                                       $permissions['lead:leads:editother'],
-                                       $item->getCreatedBy()
-                                       )
-                                   ): ?>
 
                             <a href="<?php echo $view['router']->generate(
                                 'mautic_company_action',
@@ -123,11 +117,6 @@ if ($tmpl == 'index') {
                                     <?php echo $view->escape($fields['core']['companyname']['value']); ?>
                                 <?php endif; ?>
                             </a>
-                        <?php else: ?>
-                            <?php if (isset($fields['core']['companyname'])) : ?>
-                                <?php echo $view->escape($fields['core']['companyname']['value']); ?>
-                            <?php endif; ?>
-                        <?php endif; ?>
                         </div>
                     </td>
                     <td>

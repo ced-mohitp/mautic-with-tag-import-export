@@ -15,12 +15,12 @@ use Mautic\CoreBundle\EventListener\ChannelTrait;
 use Mautic\CoreBundle\EventListener\CommonSubscriber;
 use Mautic\CoreBundle\Helper\IpLookupHelper;
 use Mautic\CoreBundle\Model\AuditLogModel;
+use Mautic\LeadBundle\Entity\DoNotContact;
 use Mautic\LeadBundle\Entity\Lead;
 use Mautic\LeadBundle\Event as Events;
 use Mautic\LeadBundle\Helper\LeadChangeEventDispatcher;
 use Mautic\LeadBundle\LeadEvents;
 use Mautic\LeadBundle\Model\ChannelTimelineInterface;
-use Mautic\LeadBundle\Templating\Helper\DncReasonHelper;
 
 /**
  * Class LeadSubscriber.
@@ -45,26 +45,16 @@ class LeadSubscriber extends CommonSubscriber
     private $leadEventDispatcher;
 
     /**
-     * @var DncReasonHelper
+     * LeadSubscriber constructor.
+     *
+     * @param IpLookupHelper $ipLookupHelper
+     * @param AuditLogModel  $auditLogModel
      */
-    private $dncReasonHelper;
-
-    /**
-     * @param IpLookupHelper            $ipLookupHelper
-     * @param AuditLogModel             $auditLogModel
-     * @param LeadChangeEventDispatcher $eventDispatcher
-     * @param DncReasonHelper           $dncReasonHelper
-     */
-    public function __construct(
-        IpLookupHelper $ipLookupHelper,
-        AuditLogModel $auditLogModel,
-        LeadChangeEventDispatcher $eventDispatcher,
-        DncReasonHelper $dncReasonHelper
-    ) {
+    public function __construct(IpLookupHelper $ipLookupHelper, AuditLogModel $auditLogModel, LeadChangeEventDispatcher $eventDispatcher)
+    {
         $this->ipLookupHelper      = $ipLookupHelper;
         $this->auditLogModel       = $auditLogModel;
         $this->leadEventDispatcher = $eventDispatcher;
-        $this->dncReasonHelper     = $dncReasonHelper;
     }
 
     /**
@@ -545,7 +535,17 @@ class LeadSubscriber extends CommonSubscriber
 
         if (!$event->isEngagementCount()) {
             foreach ($rows['results'] as $row) {
-                $row['reason'] = $this->dncReasonHelper->toText($row['reason']);
+                switch ($row['reason']) {
+                    case DoNotContact::UNSUBSCRIBED:
+                        $row['reason'] = $this->translator->trans('mautic.lead.event.donotcontact_unsubscribed');
+                        break;
+                    case DoNotContact::BOUNCED:
+                        $row['reason'] = $this->translator->trans('mautic.lead.event.donotcontact_bounced');
+                        break;
+                    case DoNotContact::MANUAL:
+                        $row['reason'] = $this->translator->trans('mautic.lead.event.donotcontact_manual');
+                        break;
+                }
 
                 $template = 'MauticLeadBundle:SubscribedEvents\Timeline:donotcontact.html.php';
                 $icon     = 'fa-ban';

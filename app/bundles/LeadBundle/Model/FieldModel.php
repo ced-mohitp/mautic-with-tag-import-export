@@ -138,12 +138,6 @@ class FieldModel extends FormModel
             'listable' => true,
             'object'   => 'lead',
         ],
-        'last_active' => [
-            'type'     => 'datetime',
-            'fixed'    => true,
-            'listable' => true,
-            'object'   => 'lead',
-        ],
         'attribution_date' => [
             'type'     => 'datetime',
             'fixed'    => true,
@@ -600,18 +594,6 @@ class FieldModel extends FormModel
     public function isUsedField(LeadField $field)
     {
         return $this->leadListModel->isFieldUsed($field);
-    }
-
-    /**
-     * Returns list of all segments that use $field.
-     *
-     * @param LeadField $field
-     *
-     * @return \Doctrine\ORM\Tools\Pagination\Paginator
-     */
-    public function getFieldSegments(LeadField $field)
-    {
-        return $this->leadListModel->getFieldSegments($field);
     }
 
     /**

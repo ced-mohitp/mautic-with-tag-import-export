@@ -201,7 +201,11 @@ class ImportController extends FormController
                 /** @var \Mautic\LeadBundle\Model\FieldModel $fieldModel */
                 $fieldModel    = $this->getModel('lead.field');
                 $leadFields    = $fieldModel->getFieldList(false, false);
+
+
+                //file_put_contents('log', json_encode($leadFields));
                 $importFields  = $session->get('mautic.'.$object.'.import.importfields', []);
+
                 $companyFields = $fieldModel->getFieldList(false, false, ['isPublished' => true, 'object' => 'company']);
 
                 try {
@@ -230,6 +234,7 @@ class ImportController extends FormController
                 break;
 
             case self::STEP_IMPORT_FROM_CSV:
+
                 ignore_user_abort(true);
 
                 $inProgress = $session->get('mautic.'.$object.'.import.inprogress', false);
@@ -243,6 +248,10 @@ class ImportController extends FormController
                     if (!$import->getDateStarted()) {
                         $import->setDateStarted(new \DateTime());
                     }
+
+                    //file_put_contents('log', $import) ; 
+
+                    //print_r($import);
 
                     $importModel->process($import, $progress);
 

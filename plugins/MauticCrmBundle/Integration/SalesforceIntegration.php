@@ -11,7 +11,6 @@
 
 namespace MauticPlugin\MauticCrmBundle\Integration;
 
-use Mautic\CoreBundle\Helper\InputHelper;
 use Mautic\LeadBundle\Entity\Company;
 use Mautic\LeadBundle\Entity\DoNotContact;
 use Mautic\LeadBundle\Entity\Lead;
@@ -435,12 +434,6 @@ class SalesforceIntegration extends CrmAbstractIntegration
                     $entity = false;
                     switch ($object) {
                         case 'Contact':
-                            if (isset($dataObject['Email__Contact'])) {
-                                // Sanitize email to make sure we match it
-                                // correctly against mautic emails
-                                $dataObject['Email__Contact'] = InputHelper::email($dataObject['Email__Contact']);
-                            }
-
                             //get company from account id and assign company name
                             if (isset($dataObject['AccountId__'.$object])) {
                                 $companyName = $this->getCompanyName($dataObject['AccountId__'.$object], 'Name');
@@ -458,14 +451,7 @@ class SalesforceIntegration extends CrmAbstractIntegration
                             } elseif (!empty($dataObject['Owner__Contact']['Email'])) {
                                 $dataObject['owner_email'] = $dataObject['Owner__Contact']['Email'];
                             }
-
-                            if (isset($dataObject['Email__Lead'])) {
-                                // Sanitize email to make sure we match it
-                                // correctly against mautic_leads emails
-                                $dataObject['Email__Lead'] = InputHelper::email($dataObject['Email__Lead']);
-                            }
-
-                            $entity                = $this->getMauticLead($dataObject, true, null, null, $object);
+                            $entity                = $this->getMauticLead($dataObject, true, null, null, $object, $params);
                             $mauticObjectReference = 'lead';
                             $detachClass           = Lead::class;
 
